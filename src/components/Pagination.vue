@@ -51,9 +51,9 @@ const handlePageSizeChange = (event: Event) => {
           {{ option.label }}
         </option>
       </select>
-      <div class="flex items-center text-sm text-gray-600">
+      <div class="flex items-center text-sm gap-2 text-gray-600">
         <p>/ page</p>
-        <p class="opacity-10">|</p>
+        <p class="opacity-20">|</p>
         <p>total {{ totalElements }}</p>
       </div>
     </div>
