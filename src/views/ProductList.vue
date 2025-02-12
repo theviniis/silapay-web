@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import { formatCurrency, isFetching } from '@lib/utils';
 import productService from '@services/productService';
-import { keepPreviousData, useMutation, useQuery } from '@tanstack/vue-query';
+import { keepPreviousData, useQuery } from '@tanstack/vue-query';
 import {
   createColumnHelper,
   getCoreRowModel,
   useVueTable,
   type PaginationState,
-  type RowData,
 } from '@tanstack/vue-table';
 import { type Product } from '@services/productService';
 import { h, ref } from 'vue';
