@@ -31,6 +31,13 @@ const { table, isLoading } = defineProps<{
       </tr>
     </thead>
     <tbody class="text-gray-600 text-sm font-light">
+      <!-- Products not found component -->
+      <tr v-if="!isLoading && table.getRowModel().rows.length === 0">
+        <td :colspan="table.getAllColumns().length" class="py-3 px-6 text-left">
+          <div>No products found</div>
+        </td>
+      </tr>
+
       <!-- Loading component -->
       <tr v-if="isLoading" class="border-b border-gray-200 hover:bg-gray-100">
         <td :colspan="table.getAllColumns().length" class="py-3 px-6 text-left">

@@ -1,5 +1,6 @@
 import type { HttpResponse } from '@/@types/HttpResponse';
 import type { Pagination } from '@/@types/PaginationData';
+import { formatApiError } from '@/lib/utils';
 import api from '@lib/api';
 import { z } from 'zod';
 
@@ -20,37 +21,59 @@ export type GetProductsParams = Pick<Pagination, 'pageIndex' | 'pageSize'> & {
 
 export default {
   async getProducts(params?: GetProductsParams) {
-    const { data } = await api.get<
-      HttpResponse<{ content: Product[]; pagination: Pagination }>
-    >('/products', {
-      params,
-    });
-    return data;
+    try {
+      const { data } = await api.get<
+        HttpResponse<{ content: Product[]; pagination: Pagination }>
+      >('/products', {
+        params,
+      });
+      return data;
+    } catch (err) {
+      throw new Error(formatApiError(err));
+    }
   },
 
   async getProduct(id: Product['id']) {
-    const { data } = await api.get<HttpResponse<Product>>(`/products/${id}`);
-    return data.data;
+    try {
+      const { data } = await api.get<HttpResponse<Product>>(`/products/${id}`);
+      return data.data;
+    } catch (err) {
+      throw new Error(formatApiError(err));
+    }
   },
 
   async createProduct(product: Product) {
-    const { data } = await api.post<HttpResponse<Product>>(
-      '/products',
-      product,
-    );
-    return data.data;
+    try {
+      const { data } = await api.post<HttpResponse<Product>>(
+        '/products',
+        product,
+      );
+      return data.data;
+    } catch (err) {
+      throw new Error(formatApiError(err));
+    }
   },
 
   async updateProduct(id: Product['id'], product: Product) {
-    const { data } = await api.put<HttpResponse<Product>>(
-      `products/${id}`,
-      product,
-    );
-    return data.data;
+    try {
+      const { data } = await api.put<HttpResponse<Product>>(
+        `products/${id}`,
+        product,
+      );
+      return data.data;
+    } catch (err) {
+      throw new Error(formatApiError(err));
+    }
   },
 
   async deleteProduct(id: Product['id']) {
-    const { data } = await api.delete<HttpResponse<Product>>(`products/${id}`);
-    return data.data;
+    try {
+      const { data } = await api.delete<HttpResponse<Product>>(
+        `products/${id}`,
+      );
+      return data.data;
+    } catch (err) {
+      throw new Error(formatApiError(err));
+    }
   },
 };

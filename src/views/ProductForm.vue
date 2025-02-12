@@ -5,6 +5,11 @@ import { useRoute, useRouter } from 'vue-router';
 import { updateProductSchema } from '@lib/schema';
 import { useMutation, useQueryClient } from '@tanstack/vue-query';
 import Button from '@/components/Button.vue';
+import Input from '@/components/Input.vue';
+import TextArea from '@/components/TextArea.vue';
+import InputCurrency from '@/components/InputCurrency.vue';
+import { ZodError } from 'zod';
+import { formatZodError } from '@/lib/utils';
 
 const route = useRoute();
 const router = useRouter();
@@ -26,23 +31,23 @@ onMounted(async () => {
 
 const handleMutateProduct = async () => {
   try {
-    const result = await updateProductSchema.safeParseAsync(form.value);
-
-    if (!result.success) throw new Error('Invalid form data');
+    const result = await updateProductSchema.parseAsync(form.value);
 
     if (editMode.value) {
-      await productService.updateProduct(route.params.id, result.data);
+      await productService.updateProduct(route.params.id, form.value);
     } else {
-      await productService.createProduct(result.data);
+      await productService.createProduct(form.value);
     }
 
     router.push('/');
   } catch (err) {
-    alert(err.message);
+    if (err instanceof ZodError) {
+      alert(formatZodError(err));
+    } else alert(err.message);
   }
 };
 
-const { mutateAsync: handleSubmit, isIdle } = useMutation({
+const { mutateAsync: handleSubmit, isPending } = useMutation({
   mutationFn: handleMutateProduct,
   onSuccess: queryClient.invalidateQueries({ queryKey: ['products'] }),
 });
@@ -55,53 +60,41 @@ const { mutateAsync: handleSubmit, isIdle } = useMutation({
         {{ editMode ? 'Editar' : 'Novo' }} Produto
       </h2>
       <form @submit.prevent="handleSubmit" class="space-y-4">
-        <div>
-          <label class="block text-gray-700 text-sm font-bold mb-2" for="name">
-            Nome
-          </label>
-          <input
-            v-model="form.name"
-            id="name"
-            type="text"
-            required
-            class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
-          />
-        </div>
+        <Input
+          v-model="form.name"
+          id="name"
+          type="text"
+          placeholder="Product name"
+          class="input input-bordered w-full max-w-xs"
+          label="Name"
+          :required="editMode ? false : true"
+        />
 
-        <div>
-          <label class="block text-gray-700 text-sm font-bold mb-2" for="price">
-            Preço
-          </label>
-          <input
-            v-model="form.price"
-            id="price"
-            type="number"
-            step="0.01"
-            required
-            class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
-          />
-        </div>
+        <InputCurrency
+          label="Price"
+          v-model="form.price"
+          id="price"
+          type="number"
+          step="0.01"
+          placeholder="0.00"
+          :required="editMode ? false : true"
+          :options="{ currency: 'USD', valueRange: { min: 0 } }"
+        />
 
-        <div>
-          <label
-            class="block text-gray-700 text-sm font-bold mb-2"
-            for="description"
-          >
-            Descrição
-          </label>
-          <textarea
-            v-model="form.description"
-            id="description"
-            rows="3"
-            class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
-          ></textarea>
-        </div>
+        <TextArea
+          label="Description"
+          v-model="form.description"
+          id="description"
+          rows="3"
+          placeholder="Product description"
+          :required="editMode ? false : true"
+        ></TextArea>
 
         <div class="flex justify-end space-x-4">
           <Button theme="secondary">
             <router-link to="/">Cancelar</router-link>
           </Button>
-          <Button type="submit" :isLoading="!isIdle">Salvar</Button>
+          <Button type="submit" :isLoading="isPending">Salvar</Button>
         </div>
       </form>
     </div>

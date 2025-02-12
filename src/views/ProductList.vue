@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { formatCurrency } from '@lib/utils';
+import { formatCurrency, isFetching } from '@lib/utils';
 import productService from '@services/productService';
 import { keepPreviousData, useMutation, useQuery } from '@tanstack/vue-query';
 import {
@@ -15,12 +15,6 @@ import ActionsCell from '@/components/ActionsCell.vue';
 import Pagination from '@/components/Pagination.vue';
 import ProductsTable from '@/components/ProductsTable.vue';
 import ProductsTableHeader from '@/components/ProductsTableHeader.vue';
-
-declare module '@tanstack/vue-table' {
-  interface TableMeta<TData extends RowData> {
-    handeDeleteProduct: (id: string) => Promise<Product>;
-  }
-}
 
 const columnHelper = createColumnHelper<Product>();
 
@@ -54,56 +48,51 @@ const pagination = ref<PaginationState>({
   pageSize: 20,
 });
 
-const fetchProducts = async () => {
-  const response = await productService.getProducts({
+const getProducts = async () => {
+  const { data, statusCode } = await productService.getProducts({
     ...pagination.value,
   });
-  if (response.data.content.length) {
-    products.value = response.data.content;
+
+  if (statusCode === 200) {
+    products.value = data.content;
   }
-  return response;
+
+  return data;
 };
 
-const { fetchStatus, ...query } = useQuery({
+const { fetchStatus, data: queryData } = useQuery({
   queryKey: ['products', pagination],
-  queryFn: fetchProducts,
+  queryFn: getProducts,
   placeholderData: keepPreviousData,
-});
-
-const { mutateAsync: handeDeleteProduct } = useMutation({
-  mutationFn: productService.deleteProduct,
-  onSuccess: () => {
-    query.refetch();
-  },
 });
 
 const table = useVueTable({
   data: products,
   columns,
   state: { pagination: pagination.value },
+
   manualPagination: true,
   getCoreRowModel: getCoreRowModel(),
   onPaginationChange: (updater) => {
     pagination.value =
       typeof updater === 'function' ? updater(pagination.value) : updater;
   },
-  meta: { handeDeleteProduct },
 });
 </script>
 
 <template>
   <div class="container mx-auto p-4 space-y-4">
-    <ProductsTableHeader :is-loading="fetchStatus !== 'idle'" />
+    <ProductsTableHeader :is-loading="isFetching(fetchStatus)" />
 
-    <ProductsTable :table="table" :is-loading="fetchStatus !== 'idle'" />
+    <ProductsTable :table="table" :is-loading="isFetching(fetchStatus)" />
 
     <Pagination
       :pageIndex="pagination.pageIndex"
-      :totalPages="query.data.value?.data.pagination.totalPages || 0"
+      :totalPages="queryData?.pagination.totalPages ?? 0"
       :page-size="pagination.pageSize"
+      :total-elements="queryData?.pagination.totalElements ?? 0"
       :onChangePageIndex="table.setPageIndex"
       :onChangePageSize="table.setPageSize"
-      :total-elements="query.data.value?.data.pagination.totalElements"
     />
   </div>
 </template>
