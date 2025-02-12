@@ -1,4 +1,3 @@
-import type { FetchStatus } from '@tanstack/vue-query';
 import { AxiosError } from 'axios';
 import { ZodError } from 'zod';
 
@@ -7,10 +6,6 @@ export function formatCurrency(value: number) {
     style: 'currency',
     currency: 'USD',
   }).format(value);
-}
-
-export function isFetching(fetchStatus: FetchStatus) {
-  return fetchStatus !== 'idle';
 }
 
 export function formatApiError(err: any): string {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { formatCurrency, isFetching } from '@lib/utils';
+import { formatCurrency } from '@lib/utils';
 import productService from '@services/productService';
 import { keepPreviousData, useQuery } from '@tanstack/vue-query';
 import {
@@ -59,7 +59,7 @@ const getProducts = async () => {
   return data;
 };
 
-const { fetchStatus, data: queryData } = useQuery({
+const { data: queryData, isLoading } = useQuery({
   queryKey: ['products', pagination],
   queryFn: getProducts,
   placeholderData: keepPreviousData,
@@ -81,9 +81,9 @@ const table = useVueTable({
 
 <template>
   <div class="container mx-auto p-4 space-y-4">
-    <ProductsTableHeader :is-loading="isFetching(fetchStatus)" />
+    <ProductsTableHeader />
 
-    <ProductsTable :table="table" :is-loading="isFetching(fetchStatus)" />
+    <ProductsTable :table="table" :is-loading="isLoading" />
 
     <Pagination
       :pageIndex="pagination.pageIndex"
