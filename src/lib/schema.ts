@@ -11,8 +11,8 @@ export const productSchema = z.object({
   name: nameSchema,
   price: priceSchema,
   description: descriptionSchema,
-  createdAt: z.date().default(() => new Date()),
-  updatedAt: z.date().default(() => new Date()),
+  createdAt: z.date(),
+  updatedAt: z.date(),
 });
 
 export const updateProductSchema = z.object({
@@ -20,5 +20,3 @@ export const updateProductSchema = z.object({
   price: priceSchema.optional(),
   description: descriptionSchema.optional(),
 });
-
-export const foo = {};
