@@ -8,8 +8,16 @@ export function formatCurrency(value: number) {
   }).format(value);
 }
 
-export function formatApiError(err: any): string {
-  if (err instanceof AxiosError) {
+export function formatError(err: any): string {
+  let message = '';
+
+  function formatZodError(err: ZodError) {
+    return err.errors
+      .map((err) => `• Field ${err.path.join('.')}: ${err.message}`)
+      .join(';\n');
+  }
+
+  function formatAxiosError(err: AxiosError) {
     const _err = err as AxiosError<{ message: string[] }>;
     if (!_err.response?.data.message) return '';
     if (Array.isArray(_err.response.data.message)) {
@@ -18,14 +26,12 @@ export function formatApiError(err: any): string {
       return `• ${_err.response.data.message}`;
     }
   }
-  return '';
-}
 
-export function formatZodError(err: any): string {
   if (err instanceof ZodError) {
-    return err.errors
-      .map((err) => `• Field ${err.path.join('.')}: ${err.message}`)
-      .join(';\n');
+    message = formatZodError(err);
+  } else if (err instanceof AxiosError) {
+    message = formatAxiosError(err);
   }
-  return '';
+
+  return message;
 }

@@ -9,7 +9,7 @@ import Input from '@/components/Input.vue';
 import TextArea from '@/components/TextArea.vue';
 import InputCurrency from '@/components/InputCurrency.vue';
 import { ZodError } from 'zod';
-import { formatZodError } from '@/lib/utils';
+import { formatError } from '@/lib/utils';
 
 const route = useRoute();
 const router = useRouter();
@@ -42,7 +42,7 @@ const handleMutateProduct = async () => {
     router.push('/');
   } catch (err) {
     if (err instanceof ZodError) {
-      alert(formatZodError(err));
+      alert(formatError(err));
     } else alert(err.message);
   }
 };

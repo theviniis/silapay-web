@@ -1,6 +1,6 @@
 import type { HttpResponse } from '@/@types/HttpResponse';
 import type { Pagination } from '@/@types/PaginationData';
-import { formatApiError } from '@/lib/utils';
+import { formatError } from '@/lib/utils';
 import api from '@lib/api';
 import { z } from 'zod';
 
@@ -29,7 +29,7 @@ export default {
       });
       return data;
     } catch (err) {
-      throw new Error(formatApiError(err));
+      throw new Error(formatError(err));
     }
   },
 
@@ -38,7 +38,7 @@ export default {
       const { data } = await api.get<HttpResponse<Product>>(`/products/${id}`);
       return data.data;
     } catch (err) {
-      throw new Error(formatApiError(err));
+      throw new Error(formatError(err));
     }
   },
 
@@ -50,7 +50,7 @@ export default {
       );
       return data.data;
     } catch (err) {
-      throw new Error(formatApiError(err));
+      throw new Error(formatError(err));
     }
   },
 
@@ -62,7 +62,7 @@ export default {
       );
       return data.data;
     } catch (err) {
-      throw new Error(formatApiError(err));
+      throw new Error(formatError(err));
     }
   },
 
@@ -73,7 +73,7 @@ export default {
       );
       return data.data;
     } catch (err) {
-      throw new Error(formatApiError(err));
+      throw new Error(formatError(err));
     }
   },
 };
