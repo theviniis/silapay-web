@@ -15,6 +15,8 @@ export const productSchema = z.object({
   updatedAt: z.date(),
 });
 
+export type Product = z.infer<typeof productSchema>;
+
 export const updateProductSchema = z.object({
   name: nameSchema.optional(),
   price: priceSchema.optional(),

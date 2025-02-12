@@ -1,19 +1,8 @@
 import type { HttpResponse } from '@/@types/HttpResponse';
 import type { Pagination } from '@/@types/PaginationData';
+import type { Product } from '@/lib/schema';
 import { formatError } from '@/lib/utils';
 import api from '@lib/api';
-import { z } from 'zod';
-
-const productSchema = z.object({
-  id: z.string().uuid(),
-  name: z.string().min(2),
-  description: z.string().min(2).max(300),
-  price: z.number().positive(),
-  createdAt: z.string().transform((value) => new Date(value)),
-  updatedAt: z.string().transform((value) => new Date(value)),
-});
-
-export type Product = z.infer<typeof productSchema>;
 
 export type GetProductsParams = Pick<Pagination, 'pageIndex' | 'pageSize'> & {
   sort?: `${keyof Product},${'asc' | 'desc'}`;
