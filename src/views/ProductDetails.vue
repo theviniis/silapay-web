@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
-import productService, { type Product } from '@/services/productService';
+import productService from '@/services/productService';
+import type { Product } from '@/lib/schema';
 
 const route = useRoute();
 const product = ref<Product | null>(null);

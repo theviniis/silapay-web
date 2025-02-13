@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Product } from '@/services/productService';
+import type { Product } from '@/lib/schema';
 import { FlexRender, type Table } from '@tanstack/vue-table';
 
 const { table, isLoading } = defineProps<{

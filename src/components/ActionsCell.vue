@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import type { Product } from '@/services/productService';
 import type { CellContext } from '@tanstack/vue-table';
 import Button from './Button.vue';
 import { useMutation, useQueryClient } from '@tanstack/vue-query';
 import productService from '@/services/productService';
+import type { Product } from '@/lib/schema';
 
 const props = defineProps<CellContext<Product, unknown>>();
 

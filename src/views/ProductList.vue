@@ -8,12 +8,12 @@ import {
   useVueTable,
   type PaginationState,
 } from '@tanstack/vue-table';
-import { type Product } from '@services/productService';
 import { h, ref } from 'vue';
 import ActionsCell from '@/components/ActionsCell.vue';
 import Pagination from '@/components/Pagination.vue';
 import ProductsTable from '@/components/ProductsTable.vue';
 import ProductsTableHeader from '@/components/ProductsTableHeader.vue';
+import type { Product } from '@/lib/schema';
 
 const columnHelper = createColumnHelper<Product>();
 
@@ -69,7 +69,6 @@ const table = useVueTable({
   data: products,
   columns,
   state: { pagination: pagination.value },
-
   manualPagination: true,
   getCoreRowModel: getCoreRowModel(),
   onPaginationChange: (updater) => {

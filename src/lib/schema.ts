@@ -22,3 +22,9 @@ export const updateProductSchema = z.object({
   price: priceSchema.optional(),
   description: descriptionSchema.optional(),
 });
+
+updateProductSchema.parse({
+  name: '1',
+  price: 10,
+  description: 'teste',
+});
