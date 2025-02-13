@@ -18,7 +18,7 @@ const queryClient = useQueryClient();
 
 const form = ref({
   name: '',
-  price: 0,
+  price: undefined,
   description: '',
 });
 
